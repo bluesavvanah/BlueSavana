@@ -28,7 +28,7 @@ dependencies {
     implementation 'io.nlopez.smartlocation:library:3.2.11'
 
     // Променето од 0.3.0 во 0.4.2 (достапно на Maven Central)
-    implementation 'pub.devrel:easypermissions:0.4.2'
+    implementation 'pub.devrel:easypermissions:1.0.0'
 
     // Променето во стабилна верзија наместо beta2
     implementation "android.arch.persistence.room:runtime:1.1.1"
