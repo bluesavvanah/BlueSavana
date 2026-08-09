@@ -27,10 +27,9 @@ dependencies {
     implementation 'io.socket:socket.io-client:1.0.0'
     implementation 'io.nlopez.smartlocation:library:3.2.11'
 
-    // Променето од 0.3.0 во 0.4.2 (достапно на Maven Central)
-    implementation 'pub.devrel:easypermissions:1.0.0'
+    // Заменето со JitPack линк наместо затворениот JCenter
+    implementation 'com.github.googlesamples:easypermissions:v1.0.0'
 
-    // Променето во стабилна верзија наместо beta2
     implementation "android.arch.persistence.room:runtime:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
 
