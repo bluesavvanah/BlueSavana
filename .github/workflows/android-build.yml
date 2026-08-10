@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Use RUNNER_TEMP so we don't rely on any cached SDK on the runner
+      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
 
     steps:
       - name: Checkout repository
@@ -21,20 +24,37 @@ jobs:
           java-version: '8'
           distribution: 'temurin'
           cache: gradle
-      - name: Set up JDK 8
-        uses: actions/setup-java@v4
-        with:
-          java-version: '8'
-          distribution: 'temurin'
-          cache: gradle
 
-      - name: Clear Android SDK cache
-        run: rm -rf ~/.android/sdk-repo-cache
+      - name: Prepare Android SDK root
+        run: |
+          mkdir -p "${ANDROID_SDK_ROOT}"
+          echo "ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}" >> $GITHUB_ENV
+
+      - name: Clear possible old Android metadata (safe)
+        run: |
+          rm -rf "$HOME/.android/cache" "$HOME/.android/repositories.cfg" "${ANDROID_SDK_ROOT}/.repo" "${ANDROID_SDK_ROOT}/.cache" || true
+
+      - name: Download & install Android command-line tools
+        run: |
+          curl -sS -o /tmp/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-latest.zip
+          unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools
+          mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools/latest"
+          mv /tmp/cmdline-tools/cmdline-tools/* "${ANDROID_SDK_ROOT}/cmdline-tools/latest/"
+          # Add cmdline-tools to PATH for the rest of the job
+          echo "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin" >> $GITHUB_PATH
+
+      - name: Update SDK & accept licenses
+        run: |
+          sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --update || true
+          yes | sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses
+
+      - name: Install required platform & build-tools
+        run: |
+          # compileSdkVersion = 26, buildToolsVersion = 28.0.2 (from app/build.gradle)
+          sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" "platform-tools" "platforms;android-26" "build-tools;28.0.2"
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: chmod +x ./gradlew
 
       - name: Build APK with Gradle
         run: ./gradlew assembleDebug --stacktrace
