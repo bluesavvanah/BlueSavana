@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="https://console.firebase.google.com/project/bluesavannah-b2cd0/database/bluesavannah-b2cd0-default-rtdb/data/~2F"
     package="com.android.adobot">
 
     <uses-permission
