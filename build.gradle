@@ -3,6 +3,8 @@ buildscript {
         google()
         mavenCentral()
         jcenter()
+        // Added JitPack in case some dependencies are hosted there
+        maven { url "https://jitpack.io" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.2'
@@ -14,6 +16,8 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
+        // Added JitPack so 'com.github.googlesamples:easypermissions' and other JitPack libs resolve
+        maven { url "https://jitpack.io" }
     }
 }
 
